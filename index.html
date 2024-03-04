@@ -45,6 +45,9 @@
         color: white;
         background-color: transparent;
       }
+      #new-btn:hover {
+        background-color: rgb(0, 115, 255);
+      }
       #save-btn:hover {
         background-color: rgb(16, 181, 16);
       }
@@ -80,6 +83,7 @@
     <div id="header">
       <div>
         <span>Html Previewer </span>
+        <button id="new-btn">New</button>
         <button id="save-btn">Save</button>
         <button id="delete-btn">Delete</button>
       </div>
@@ -112,10 +116,14 @@
       let output = document.querySelector("#output");
       let wrapper = document.querySelector("#wrapper");
       let widthInput = document.querySelector("#width-input");
+      let newBtn = document.querySelector("#new-btn");
       let saveBTn = document.querySelector("#save-btn");
       let deleteBtn = document.querySelector("#delete-btn");
       let codes = new Map();
       let savedList = document.querySelector("#saved-list");
+      let selectedOption;
+      let currentOption;
+
       widthInput.addEventListener("input", () => {
         if (widthInput.value == widthInput.max) {
           wrapper.style.gridTemplateRows = "1fr 1fr";
@@ -128,13 +136,29 @@
         }fr`;
         wrapper.style.gridTemplateRows = "none";
       });
+
       function run() {
         output.src =
           "data:text/html;charset=utf-8," + encodeURI(codeInput.value);
       }
+
       codeInput.addEventListener("input", run);
+
+      newBtn.addEventListener("click", () => {
+        codeInput.value = "";
+        currentOption = null;
+        savedList.value = currentOption;
+        run();
+      });
+
       saveBTn.addEventListener("click", () => {
         if (codeInput.value.trim() == "") {
+          return;
+        }
+        if (currentOption) {
+          currentOption.value = codeInput.value;
+          codes.set(currentOption.text, codeInput.value);
+          console.log(codes);
           return;
         }
         let name;
@@ -148,6 +172,7 @@
               alert("Code is not saved!");
               return;
             case name.trim() == "":
+              currentOption: any;
               break;
             case codes.has(name.trim()):
               alert("Name already exists");
@@ -156,25 +181,39 @@
               validated = true;
               break;
           }
+          name = name.trim();
+          savedList.value = name;
+          codes.set(name, codeInput.value);
+          let option = document.createElement("option");
+          option.text = name;
+          option.value = codeInput.value;
+          savedList.add(option);
+          savedList.value = name;
+          currentOption = option;
         }
-        name = name.trim();
-        codes.set(name, codeInput.value);
-        let option = document.createElement("option");
-        option.text = name;
-        option.value = codeInput.value;
-        savedList.add(option);
-        currentOption = option;
-        savedList.value = option.text;
+        console.log(currentOption.value, currentOption.text);
       });
-      let currentOption;
+
       savedList.addEventListener("input", () => {
-        let selectedOption = savedList.options[savedList.selectedIndex];
+        selectedOption = savedList.options[savedList.selectedIndex];
         codeInput.value = selectedOption.value;
         run();
         currentOption = selectedOption;
       });
+
       deleteBtn.addEventListener("click", () => {
-        alert("Boom. Deleted, jk0");
+        if (currentOption) {
+          let confirmDelete = confirm("Delete the code?");
+          if (confirmDelete == true) {
+            codeInput.value = "";
+            savedList.value = null;
+            console.log(savedList.value);
+            savedList.remove(currentOption.text);
+            codes.delete(currentOption.text);
+            alert("Deleted");
+            run();
+          }
+        }
       });
     </script>
   </body>
