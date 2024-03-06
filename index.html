@@ -90,11 +90,11 @@
       <label for="saved-list">
         Saved code
         <select name="" id="saved-list">
-          <!-- <option value="1">1</option>
+          <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
-        <option value="5">5</option> -->
+        <option value="5">5</option>
         </select>
       </label>
       <label for="width-input"
@@ -121,8 +121,12 @@
       let deleteBtn = document.querySelector("#delete-btn");
       let codes = new Map();
       let savedList = document.querySelector("#saved-list");
-      let selectedOption;
-      let currentOption;
+      const getcurrentOption = function(){
+        return savedList.value;
+      }
+      const setCurrentOption = function(opt = '') {
+        savedList.value = opt
+      }
 
       widthInput.addEventListener("input", () => {
         if (widthInput.value == widthInput.max) {
@@ -142,79 +146,9 @@
           "data:text/html;charset=utf-8," + encodeURI(codeInput.value);
       }
 
-      codeInput.addEventListener("input", run);
-
-      newBtn.addEventListener("click", () => {
-        codeInput.value = "";
-        currentOption = null;
-        savedList.value = currentOption;
-        run();
-      });
-
-      saveBTn.addEventListener("click", () => {
-        if (codeInput.value.trim() == "") {
-          return;
-        }
-        if (currentOption) {
-          currentOption.value = codeInput.value;
-          codes.set(currentOption.text, codeInput.value);
-          console.log(codes);
-          return;
-        }
-        let name;
-        let validated = false;
-        while (!validated) {
-          name = prompt(
-            "Enter valid name: \nPress Esc or cancel to cancel the action"
-          );
-          switch (true) {
-            case name == null:
-              alert("Code is not saved!");
-              return;
-            case name.trim() == "":
-              currentOption: any;
-              break;
-            case codes.has(name.trim()):
-              alert("Name already exists");
-              break;
-            default:
-              validated = true;
-              break;
-          }
-          name = name.trim();
-          savedList.value = name;
-          codes.set(name, codeInput.value);
-          let option = document.createElement("option");
-          option.text = name;
-          option.value = codeInput.value;
-          savedList.add(option);
-          savedList.value = name;
-          currentOption = option;
-        }
-        console.log(currentOption.value, currentOption.text);
-      });
-
-      savedList.addEventListener("input", () => {
-        selectedOption = savedList.options[savedList.selectedIndex];
-        codeInput.value = selectedOption.value;
-        run();
-        currentOption = selectedOption;
-      });
-
-      deleteBtn.addEventListener("click", () => {
-        if (currentOption) {
-          let confirmDelete = confirm("Delete the code?");
-          if (confirmDelete == true) {
-            codeInput.value = "";
-            savedList.value = null;
-            console.log(savedList.value);
-            savedList.remove(currentOption.text);
-            codes.delete(currentOption.text);
-            alert("Deleted");
-            run();
-          }
-        }
-      });
+      codeInput.addEventListener('input',()=>{
+        run()
+      })
     </script>
   </body>
 </html>
