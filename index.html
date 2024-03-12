@@ -10,40 +10,41 @@
         margin: 0;
         box-sizing: border-box;
       }
-
       body {
         width: 100vw;
         height: 100vh;
         display: grid;
-        grid-template-rows: 3rem 1fr;
+        grid-template-rows: 4rem 1fr;
         font-family: Arial, Helvetica, sans-serif;
       }
-
       #header {
         display: flex;
+        align-content: space-around;
         justify-content: space-between;
-        align-items: center;
         font-size: large;
         border-bottom: solid 1px black;
         background-color: #3e4446;
         color: white;
         padding: 10px;
+        flex-wrap: wrap;
       }
       #wrapper {
         display: grid;
         grid-template-columns: 6fr 6fr;
       }
-
       button {
         padding: 2px;
         border: none;
         border-bottom: ridge #51585a;
         border-radius: 2px;
-        margin-right: 10px;
+        margin: 5px;
         font-weight: bold;
         cursor: pointer;
         color: white;
         background-color: transparent;
+      }
+      #new-btn {
+        margin-left: 2%;
       }
       #new-btn:hover {
         background-color: rgb(0, 115, 255);
@@ -51,13 +52,24 @@
       #save-btn:hover {
         background-color: rgb(16, 181, 16);
       }
+      #rename-btn:hover {
+        background-color: darkblue;
+      }
       #delete-btn:hover {
         background-color: rgb(192, 43, 23);
       }
+      #button-wrapper {
+        flex-grow: 4;
+        flex-shrink: 2;
+      }
+      #width-input {
+        margin-right: 0.5rem;
+        width: 30vw;
+      }
       #saved-list {
-        max-width: 10rem;
-        min-width: 3rem;
+        max-width: 15rem;
         height: 1.5rem;
+        text-align: left;
       }
       textarea {
         width: 100%;
@@ -77,27 +89,23 @@
       ::placeholder {
         color: white;
       }
+      @media only screen and (max-width: 400px) {
+        body {
+          grid-template-rows: 7rem 1fr;
+        }
+      }
     </style>
   </head>
   <body>
     <div id="header">
-      <div>
-        <span>Html Previewer </span>
+      <h4>Html Previewer</h4>
+      <div id="button-wrapper">
         <button id="new-btn">New</button>
         <button id="save-btn">Save</button>
+        <button id="rename-btn">Rename</button>
         <button id="delete-btn">Delete</button>
       </div>
-      <label for="saved-list">
-        Saved code
-        <select name="" id="saved-list">
-          <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        </select>
-      </label>
-      <label for="width-input"
+      <label id="width-wrapper" for="width-input"
         ><input
           type="range"
           id="width-input"
@@ -105,50 +113,18 @@
           max="12"
           value="6"
           title="Resize width"
+          step="any"
       /></label>
+      <label for="saved-list">
+        <select name="" id="saved-list">
+          <option>Select Code</option>
+        </select>
+      </label>
     </div>
     <div id="wrapper">
       <textarea id="code-input" placeholder="Write your code here"></textarea>
       <iframe id="output" frameborder="0"></iframe>
     </div>
-    <script>
-      let codeInput = document.querySelector("#code-input");
-      let output = document.querySelector("#output");
-      let wrapper = document.querySelector("#wrapper");
-      let widthInput = document.querySelector("#width-input");
-      let newBtn = document.querySelector("#new-btn");
-      let saveBTn = document.querySelector("#save-btn");
-      let deleteBtn = document.querySelector("#delete-btn");
-      let codes = new Map();
-      let savedList = document.querySelector("#saved-list");
-      const getcurrentOption = function(){
-        return savedList.value;
-      }
-      const setCurrentOption = function(opt = '') {
-        savedList.value = opt
-      }
-
-      widthInput.addEventListener("input", () => {
-        if (widthInput.value == widthInput.max) {
-          wrapper.style.gridTemplateRows = "1fr 1fr";
-          wrapper.style.gridTemplateColumns = "none";
-          return;
-        }
-
-        wrapper.style.gridTemplateColumns = `${widthInput.value}fr ${
-          12 - widthInput.value
-        }fr`;
-        wrapper.style.gridTemplateRows = "none";
-      });
-
-      function run() {
-        output.src =
-          "data:text/html;charset=utf-8," + encodeURI(codeInput.value);
-      }
-
-      codeInput.addEventListener('input',()=>{
-        run()
-      })
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
